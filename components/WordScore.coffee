@@ -1,67 +1,64 @@
-  noflo = require 'noflo'
-  natural = require 'natural'
-  tokenizer = new natural.WordTokenizer()
+noflo = require 'noflo'
+natural = require 'natural'
+tokenizer = new natural.WordTokenizer()
 
-  exports.getComponent = ->
-    c = new noflo.Component
-      description: 'Find how the input words compare against the list of weighted words'
-      inPorts:
-        list:
-          datatype: 'array'
-          description: 'list of words we will use with the list of content'
-          control: true
-          required: true
-        content:
-          datatype: 'string'
-          description: 'the content which we will determine the score of'
-          required: true
-      outPorts:
-        score:
-          datatype: 'number'
-          description: 'the resulting number of comparing the content with the list'
-          required: true
+exports.getComponent = ->
+  c = new noflo.Component
+    description: 'Find how the input words compare against the list of weighted words'
+    inPorts:
+      list:
+        datatype: 'array'
+        description: 'list of words we will use with the list of content'
+        control: true
+        required: true
+      content:
+        datatype: 'string'
+        description: 'the content which we will determine the score of'
+        required: true
+    outPorts:
+      score:
+        datatype: 'number'
+        description: 'the resulting number of comparing the content with the list'
+        required: true
 
-    # we are only using data, so we do not need any brackets sent to the inPorts, pass them along
-    c.forwardBrackets =
-      list: 'out'
-      content: 'out'
-    c.process = (input, output) ->
-      # our precondition, make sure it has both before trying to get the data
-      return unless input.has 'list', 'content'
+  # we are only using data, so we do not need any brackets sent to the inPorts, pass them along
+  c.forwardBrackets =
+    list: 'out'
+    content: 'out'
 
-      # get the data
-      content = input.getData 'content'
-      list = input.getData 'list'
+  c.process (input, output) ->
+    # our precondition, make sure it has both before trying to get the data
+    return unless input.has 'list', 'content', (ip) -> ip.type is 'data'
 
-      # our base score we will send out
-      score = 0
+    # get the data
+    #content = input.getData 'content'
+    #list = input.getData 'list'
+    # @TODO: temporary hack since getData does not behave as one expects, change when fixed
+    content = ((input.getStream('content').filter (ip) -> ip.type is 'data').map (ip) -> ip.data)[0]
+    list = input.getStream(null, 'list')[0].data
 
-      # splits content into an array of words
-      contents = tokenizer.tokenize content
+    # our base score we will send out
+    score = 0
 
-      # figure out how important each word is to the content
-      # https://github.com/NaturalNode/natural#tf-idf
-      # maybe split some up into sections and add those to the documents? Every sentence maybe?
-      tfidf = new natural.TfIdf()
-      tfidf.addDocument content
-      for data in content
-        tfidf.tfidfs data, (index, measure) ->
-          console.log measure
+    # splits content into an array of words
+    contents = tokenizer.tokenize content
 
-      ###
-      wordScore = (comparison, word)
-        for comparison
-          if word not in comparison["American"].split " "
-            if word in comparison["Canadian"].split " "
-              return 1
-            else if word in comparison["British"].split " "
-              return 0.5
-            else
-              return 0
-          else
-            return -1
-      ###
+    # go through each of the comparisons in the list
+    # if it is Canadian: 1, American: -1, British: .5, None: 0
+    wordScore = (word) ->
+      for comparison in list
+        if word not in comparison["American"].split " "
+          if word in comparison["Canadian"].split " "
+            return 1
+          else if word in comparison["British"].split " "
+            return 0.5
+        else
+          return -1
+      return 0
 
-      # we could do `output.sendDone score` if we wanted
-      # since there is only one outport it will know which one we mean
-      output.sendDone score: score
+    for data in contents
+      score += wordScore data
+
+    # we could do `output.sendDone score` if we wanted
+    # since there is only one outport it will know which one we mean
+    output.sendDone score: score

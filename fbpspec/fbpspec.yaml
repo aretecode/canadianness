@@ -16,8 +16,13 @@ cases:
   name: 'content eh'
   assertion: 'should be find one `eh`'
   inputs:
-    surrounding: false
-    word: 'eh'
-    content: 'eh'
+    -
+      surrounding: false
+    -
+      word: 'eh'
+    -
+      content: 'eh'
   expect:
-    matches: ['eh']
+    matches:
+      equals: ['eh']
+  skip: 'not working'

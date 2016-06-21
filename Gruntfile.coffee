@@ -13,23 +13,9 @@ module.exports = ->
 
     # Coding standards
     coffeelint:
-      components:
+      all:
         files:
-          src: ['components/*.coffee']
-        options:
-          max_line_length:
-            value: 80
-            level: 'ignore'
-      routes:
-        files:
-          src: ['routes/*.coffee']
-        options:
-          max_line_length:
-            value: 80
-            level: 'ignore'
-      root:
-        files:
-          src: ['*.coffee']
+          src: ['components/*.coffee', 'spec/*.coffee']
         options:
           max_line_length:
             value: 80

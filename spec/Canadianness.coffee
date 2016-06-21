@@ -69,45 +69,48 @@ describe.skip 'Canadianness graph', ->
       positive.send ['']
       content.send 'A bunch of centers had a color cancelation.'
 
-describe.skip 'WordScore component', ->
+describe 'WordScore component', ->
+
+  listData = [{"Canadian":"abridgement abridgment","British":"abridgement","American":"abridgment","Notes":""},{"Canadian":"acknowledgement acknowledgment","British":"acknowledgement","American":"acknowledgment acknowledgement","Notes":""},{"Canadian":"advertise","British":"advertise","American":"advertise advertize","Notes":""},{"Canadian":"aegis egis","British":"aegis","American":"egis","Notes":""},{"Canadian":"aeon eon","British":"aeon","American":"eon","Notes":""},{"Canadian":"aesthetic esthetic","British":"aesthetic","American":"esthetic aesthetic","Notes":""},{"Canadian":"aging ageing","British":"ageing aging","American":"aging","Notes":""},{"Canadian":"airplane","British":"aeroplane","American":"airplane","Notes":""},{"Canadian":"aluminum","British":"aluminium","American":"aluminum","Notes":""},{"Canadian":"amid amidst","British":"amid amidst","American":"amid","Notes":""},{"Canadian":"amoeba","British":"amoeba","American":"ameba","Notes":""},{"Canadian":"among amongst","British":"among amongst","American":"among","Notes":""},{"Canadian":"amortization","British":"amortisation amortization","American":"amortization","Notes":""},{"Canadian":"amortize","British":"amortise amortize","American":"amortize","Notes":""},{"Canadian":"amphitheatre","British":"amphitheatre","American":"amphitheater","Notes":""},{"Canadian":"anaesthesia anesthesia","British":"anaesthesia","American":"anesthesia","Notes":""},{"Canadian":"analogue analog","British":"analogue","American":"analogue analog","Notes":"analog when used as a technical term (i.e. not digital)"},{"Canadian":"analyze analyse","British":"analyse","American":"analyze","Notes":""},{"Canadian":"anemia anaemia","British":"anaemia","American":"anemia","Notes":""},{"Canadian":"anemic anaemic","British":"anaemic","American":"anemic","Notes":""},{"Canadian":"annex","British":"annexe annex","American":"annex","Notes":"noun meaning 'something added'; verb is always annex"},{"Canadian":"apologize","British":"apologise apologize","American":"apologize","Notes":""},{"Canadian":"appal appall","British":"appal","American":"appall","Notes":"appalled/appalling in all countries"},{"Canadian":"appetizer","British":"appetiser appetizer","American":"appetizer","Notes":""},{"Canadian":"arbour arbor","British":"arbour","American":"arbor","Notes":""},{"Canadian":"archaeology archeology","British":"archaeology","American":"archeology archaeology","Notes":""},{"Canadian":"ardour ardor","British":"ardour","American":"ardor","Notes":""},{"Canadian":"artifact","British":"artefact","American":"artifact","Notes":""},{"Canadian":"armour armor","British":"armour","American":"armor","Notes":""},{"Canadian":"authorize","British":"authorise authorize","American":"authorize","Notes":""},{"Canadian":"axe","British":"axe","American":"ax","Notes":""},{"Canadian":"","British":"","American":"","Notes":""}]
+
   c = null
   content = null
-  positive = null
-  negative = null
+  list = null
   score = null
   before (done) ->
     @timeout 4000
     loader = new noflo.ComponentLoader baseDir
-    loader.load 'canadianness/Canadianness', (err, instance) ->
+    loader.load 'canadianness/WordScore', (err, instance) ->
       return done err if err
       c = instance
       content = noflo.internalSocket.createSocket()
-      positive = noflo.internalSocket.createSocket()
-      negative = noflo.internalSocket.createSocket()
+      list = noflo.internalSocket.createSocket()
       c.inPorts.content.attach content
+      c.inPorts.list.attach list
       done()
   beforeEach ->
-    emotion = noflo.internalSocket.createSocket()
     score = noflo.internalSocket.createSocket()
-    c.outPorts.emotion.attach emotion
     c.outPorts.score.attach score
   afterEach ->
-    c.outPorts.emotion.detach emotion
     c.outPorts.score.detach score
 
-  describe 'with content eh', ->
-    it 'should be neutral, yet highly Canadian', (done) ->
+  describe 'with content `ardour eh`', ->
+    it 'should be Canadian', (done) ->
       score.on 'data', (data) ->
-        chai.expect(data).to.eql 11
+        chai.expect(data).to.eql 1
         done()
 
-      emotion.on 'data', (data) ->
-        chai.expect(data).to.eql 'neutral'
+      list.send listData
+      content.send 'ardour eh?'
+
+  describe 'with content `ax`', ->
+    it 'should be not Canadian', (done) ->
+      score.on 'data', (data) ->
+        chai.expect(data).to.eql -1
         done()
 
-      negative.send ['']
-      positive.send ['']
-      content.send 'eh'
+      list.send listData
+      content.send 'ax'
 
 describe 'FindWords component', ->
   c = null
