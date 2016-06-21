@@ -1,0 +1,6 @@
+# (string)
+INPORT=FINDEHS.CONTENT:CONTENT
+# (string)
+OUTPORT=DetermineEmotion.EMOTION:EMOTION
+
+FindEhs(FindEhs) MATCHES -> CONTENT DetermineEmotion(DetermineEmotion)

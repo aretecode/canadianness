@@ -1,0 +1,23 @@
+topic: "canadianness/FindWords"
+name: "Find words fbpspec"
+fixture:
+ type: 'fbp'
+ data: |
+  # @runtime noflo-nodejs
+  INPORT=c.WORD:WORD
+  INPORT=c.CONTENT:CONTENT
+  INPORT=c.SURROUNDING:SURROUNDING
+  OUTPORT=s.OUT:MATCHES
+
+  # why this is required
+  c(FindWords) MATCHES -> IN s(core/Repeat)
+cases:
+-
+  name: 'content eh'
+  assertion: 'should be find one `eh`'
+  inputs:
+    surrounding: false
+    word: 'eh'
+    content: 'eh'
+  expect:
+    matches: ['eh']

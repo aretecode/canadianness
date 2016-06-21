@@ -1,0 +1,23 @@
+# (string)
+INPORT=SplitContent.CONTENT:CONTENT
+# (array)
+INPORT=CanadianScore.LIST:POSITIVE
+# (array)
+INPORT=UnCanadianScore.LIST:NEGATIVE
+
+# (string)
+OUTPORT=Add.EMOTION:EMOTION
+# (int)
+OUTPORT=Add.SUM:SCORE
+
+# (core/Input @TODO: link) takes the input
+# and sends it to each of the
+# (@TODO: link for sockets) sockets attached to the outport
+# ----
+# Emotion is subgraph
+SplitContent(core/Split) OUT -> CONTENT Emotion(Emotion)
+SplitContent OUT -> CONTENT UnCanadianScore(WordScore)
+SplitContent OUT -> CanadianScore(WordScore)
+
+UnCanadianScore SCORE -> ADDEND Add(noflo-math/Add)
+CanadianScore SCORE -> AUGEND Add
