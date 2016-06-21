@@ -1,5 +1,21 @@
-# 1) define our ports
 noflo = require 'noflo'
+
+# a helper to match all on a string
+matchAll = (string, regexp) ->
+  matches = []
+  string.replace regexp, ->
+    arr = [].slice.call(arguments, 0)
+    extras = arr.splice(-2)
+    arr.index = extras[0]
+    arr.input = extras[1]
+    matches.push arr
+    return
+  if matches.length then matches else []
+
+# since regexing will give the `index` and the `input`, we only want the match
+actualMatches = (matches) ->
+  return [[]] if matches.length is 0
+  matches.map (match) -> match[0]
 
 exports.getComponent = ->
   c = new noflo.Component
@@ -31,22 +47,25 @@ exports.getComponent = ->
     content: 'matches'
     surrounding: 'matches'
   c.process (input, output) ->
+    # if it is not data, remove it from the buffer
     return input.buffer.get().pop() if input.ip.type isnt 'data'
     return unless input.has 'word', 'content', (ip) -> ip.type is 'data'
 
+    # since we are sending out multiple `data` IPs, we want to wrap it in brackets
     output.send matches: new noflo.IP 'openBracket', content
 
+    # do our word processing
     word = input.getData 'word'
     content = input.getData 'content'
-    r = /([.?!]*eh[.?!]*)/gi #/(?:[.?!]*)(eh?)(?:[.?!]*)/
-    m = r.exec content
-    # @TODO: matches regex
-    matches = ['eh']
+    r = /([.?!]*eh[.?!]*)/gi
+    matches = matchAll content, r
+    matches = actualMatches matches
 
+    # for each of our matches, send them out
     for match in matches
       # if you just send content, it will automatically put it in a data ip
       # so this is the same as `output.send matches: new noflo.IP 'data', match`
       output.send matches: match
 
-    output.send matches: new noflo.IP 'closeBracket', content
-    output.done()
+    # this is the same as doing `output.send` and then `output.done`
+    output.sendDone matches: new noflo.IP 'closeBracket', content

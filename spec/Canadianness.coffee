@@ -158,9 +158,13 @@ describe 'FindWords component', ->
 
   describe 'with content that has multiple `eh`s', ->
     it 'should send an array of ehs', (done) ->
-      matches.on 'data', (data) ->
-        chai.expect(data).to.eql ['Eh...', 'eh?', 'EH?']
-        done()
+      expect = ['Eh...', 'eh?', 'EH!']
+      matches.on 'ip', (ip) ->
+        if ip.type is 'data'
+          chai.expect(ip.data).to.eql expect.shift()
+        if ip.type is 'closeBracket'
+          done()
+
       word.send 'eh'
       surrounding.send true
       content.send 'Eh... eh? EH!'
