@@ -32,6 +32,6 @@
     "noflo-nodejs": "^0.7.1"
   },
   "scripts": {
-    "test": "grunt test"
+    "test": "./node_modules/.bin/grunt test"
   }
 }
