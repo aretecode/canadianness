@@ -3,5 +3,5 @@ sudo: false
 node_js:
 - '0.12'
 - '4.2'
-- '6.1'
+- '6.2'
 script: npm test
