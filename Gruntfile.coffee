@@ -10,6 +10,7 @@ module.exports = ->
           reporter: 'spec'
           timeout: 20000
           require: 'coffee-script/register'
+          grep: process.env.TESTS
 
     # Coding standards
     coffeelint:
