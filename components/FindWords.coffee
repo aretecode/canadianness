@@ -4,8 +4,8 @@ noflo = require 'noflo'
 matchAll = (string, regexp) ->
   matches = []
   string.replace regexp, ->
-    arr = [].slice.call(arguments, 0)
-    extras = arr.splice(-2)
+    arr = [].slice.call arguments, 0
+    extras = arr.splice -2
     arr.index = extras[0]
     arr.input = extras[1]
     matches.push arr

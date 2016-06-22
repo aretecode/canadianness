@@ -1,0 +1,35 @@
+topic: "canadianness/DetermineEmotion"
+name: "Determine Emotion fbpspec"
+fixture:
+ type: 'fbp'
+ data: |
+  # @runtime nodejs
+  INPORT=TestDetermineEmotion.IN:IN
+  OUTPORT=DetermineEmotion.EMOTION:EMOTION
+  TestDetermineEmotion(canadianness/TestDetermineEmotion) OUT -> CONTENT DetermineEmotion(canadianness/DetermineEmotion)
+
+cases:
+-
+  name: 'with content eh!'
+  assertion: 'should be joyful'
+  inputs:
+    in: 'eh!'
+  expect:
+    emotion:
+      equals: 'joy'
+-
+  name: 'content eh'
+  assertion: 'should be neutral'
+  inputs:
+    in: 'eh'
+  expect:
+    emotion:
+      equals: 'neutral'
+-
+  name: 'with content [eh?, eh!?, Eh?]'
+  assertion: 'should be amusement'
+  inputs:
+    in: ['eh?', 'eh!?', 'Eh?']
+  expect:
+    emotion:
+      equals: 'amusement'
