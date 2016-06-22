@@ -1,5 +1,4 @@
 noflo = require 'noflo'
-natural = require 'natural'
 
 # https://en.wikipedia.org/wiki/Mode_(statistics)
 findMode = (array) ->
@@ -35,34 +34,29 @@ exports.getComponent = ->
     return unless input.hasStream 'content'
     contents = input.getStream 'content'
     contents = contents.filter (ip) -> ip.type is 'data'
-
-    # @TODO:
-    # if it has no data, just open and close
-    # then send out neutral
+    contents = contents.map (ip) -> ip.data
 
     matches = []
 
-    # @TODO: add emoticons next to them?
-    # @TODO: wjhat to use for `q` when it is right next to another char?
-    # https://github.com/NaturalNode/natural#classifiers
-
-    # change to json
-    # might have to split apart for symbols, or do a pr!?
-    classifier = new natural.BayesClassifier()
-    classifier.addDocument 'eh', 'neutral'
-    classifier.addDocument 'eh!', 'joy'
-    classifier.addDocument ['eh?', 'Eh?', 'Eh??'], 'amusement'
-    classifier.addDocument ['eH??', 'eh??'], 'fear'
-    classifier.addDocument ['eh !?', 'EH!?'], 'surprise'
-    classifier.addDocument 'eh?!', 'anticipation'
-    classifier.addDocument ['EH!', 'eH!'], 'excitment'
-    classifier.addDocument ['...eh', '...eh...', '..eh', 'eh..', '..eh..'], 'sadness'
-    classifier.addDocument ['EH!?', 'EH?'], 'anger'
-    classifier.train()
+    emotions =
+      joy: ['eh!']
+      neutral: ['eh']
+      amusement: ['eh?', 'Eh?', 'Eh??']
+      fear: ['eH??', 'eh??']
+      surprise: ['eh !?', 'EH!?']
+      anticipation: ['eh?!']
+      excitment: ['EH!', 'eH!']
+      sadness: ['...eh', '...eh...', '..eh', 'eh..', '..eh..']
+      anger: ['EH!?', 'EH?']
 
     for content in contents
-      matches.push classifier.classify content.data
+      for emotion, data of emotions
+        if content in data
+          matches.push emotion
 
-    mode = findMode matches
-    console.log mode, mode, mode, mode
+    if matches.length is 0
+      mode = 'neutral'
+    else
+      mode = findMode matches
+
     output.sendDone emotion: mode

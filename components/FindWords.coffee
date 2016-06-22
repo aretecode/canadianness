@@ -14,6 +14,7 @@ matchAll = (string, regexp) ->
 
 # since regexing will give the `index` and the `input`, we only want the match
 actualMatches = (matches) ->
+  # because we want to send out an empty array if there are no matches
   return [[]] if matches.length is 0
   matches.map (match) -> match[0]
 

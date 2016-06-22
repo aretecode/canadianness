@@ -1,6 +1,7 @@
 # (string)
-INPORT=FINDEHS.CONTENT:CONTENT
+INPORT=FindEhs.CONTENT:CONTENT
 # (string)
 OUTPORT=DetermineEmotion.EMOTION:EMOTION
 
-FindEhs(FindEhs) MATCHES -> CONTENT DetermineEmotion(DetermineEmotion)
+'eh' -> WORD FindEhs(canadianness/FindWords)
+FindEhs MATCHES -> CONTENT DetermineEmotion(canadianness/DetermineEmotion)
