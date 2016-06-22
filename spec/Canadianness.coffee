@@ -238,6 +238,8 @@ describe 'DetermineEmotion component', ->
         chai.expect(data).to.eql 'neutral'
         done()
 
+      # needs the extra closeBracket
+      # because of the extra connect in translation layer
       content.send new noflo.IP 'openBracket'
       content.send new noflo.IP 'data', 'eh'
       content.send new noflo.IP 'closeBracket'
@@ -252,4 +254,15 @@ describe 'DetermineEmotion component', ->
       content.send new noflo.IP 'openBracket'
       content.send new noflo.IP 'data', 'eh!'
       content.send new noflo.IP 'closeBracket'
+
+  describe 'with content [eh?, eh!?, Eh?]', ->
+    it 'should be amusement', (done) ->
+      emotion.on 'data', (data) ->
+        chai.expect(data).to.eql 'amusement'
+        done()
+
+      content.send new noflo.IP 'openBracket'
+      content.send new noflo.IP 'data', 'eh?'
+      content.send new noflo.IP 'data', 'eh!?'
+      content.send new noflo.IP 'data', 'Eh?'
       content.send new noflo.IP 'closeBracket'
