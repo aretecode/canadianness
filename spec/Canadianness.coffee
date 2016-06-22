@@ -238,10 +238,10 @@ describe 'DetermineEmotion component', ->
         chai.expect(data).to.eql 'neutral'
         done()
 
-      content.send new noflo.IP 'openBracket', null
+      content.send new noflo.IP 'openBracket'
       content.send new noflo.IP 'data', 'eh'
-      content.send new noflo.IP 'closeBracket', null
-      content.disconnect()
+      content.send new noflo.IP 'closeBracket'
+      content.send new noflo.IP 'closeBracket'
 
   describe 'with content eh!', ->
     it 'should be joyful', (done) ->
@@ -249,7 +249,7 @@ describe 'DetermineEmotion component', ->
         chai.expect(data).to.eql 'joy'
         done()
 
-      content.send new noflo.IP 'openBracket', null
+      content.send new noflo.IP 'openBracket'
       content.send new noflo.IP 'data', 'eh!'
-      content.send new noflo.IP 'closeBracket', null
-      content.disconnect()
+      content.send new noflo.IP 'closeBracket'
+      content.send new noflo.IP 'closeBracket'
