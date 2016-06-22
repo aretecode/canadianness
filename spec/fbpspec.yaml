@@ -9,5 +9,5 @@ cases:
     surrounding: false
     content: 'eh'
   expect:
-    out:
+    matches:
       equals: 'eh'
