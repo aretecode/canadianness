@@ -17,12 +17,11 @@ cases:
   assertion: 'should be find one `eh`'
   inputs:
     -
-      surrounding: false
-    -
       word: 'eh'
+    -
+      surrounding: false
     -
       content: 'eh'
   expect:
     matches:
-      equals: ['eh']
-  skip: 'not working'
+      equals: 'eh'
