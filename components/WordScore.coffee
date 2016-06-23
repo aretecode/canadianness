@@ -34,8 +34,8 @@ exports.getComponent = ->
     #content = input.getData 'content'
     #list = input.getData 'list'
     # @TODO: temporary hack since getData does not behave as one expects, change when fixed
-    content = ((input.getStream(null, 'content').filter (ip) -> ip.type is 'data').map (ip) -> ip.data)[0]
-    list = input.getStream(null, 'list')[0].data
+    content = ((input.getStream('content').filter (ip) -> ip.type is 'data').map (ip) -> ip.data)[0]
+    list = input.getStream('list')[0].data
 
     # our base score we will send out
     score = 0
