@@ -42,22 +42,28 @@ exports.getComponent = ->
         description: 'the resulting findings as a stream of data packets'
         required: true
 
-  # we are only using data, so we do not need any brackets sent to the inPorts, pass them along
+  # we are only using data,
+  # so we do not need any brackets sent to the inPorts, pass them along
+  #
+  # control ports do not have brackets,
+  # so we don't need to do anything special with them
   c.forwardBrackets =
-    word: 'matches'
     content: 'matches'
-    surrounding: 'matches'
   c.process (input, output) ->
     # if it is not data, remove it from the buffer
     return input.buffer.get().pop() if input.ip.type isnt 'data'
+    # make sure we have data in the required inPorts
     return unless input.has 'word', 'content', (ip) -> ip.type is 'data'
 
-    # since we are sending out multiple `data` IPs, we want to wrap it in brackets
+    # since we are sending out multiple `data` IPs
+    # we want to wrap them in brackets
     output.send matches: new noflo.IP 'openBracket', content
 
-    # do our word processing
+    # get the data from our in ports
     word = input.getData 'word'
     content = input.getData 'content'
+
+    # do our word processing
     r = /([.?!]*eh[.?!]*)/gi
     matches = matchAll content, r
     matches = actualMatches matches

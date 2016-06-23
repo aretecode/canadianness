@@ -3,6 +3,7 @@ module.exports = ->
   @initConfig
     pkg: @file.readJSON 'package.json'
 
+    # load all of the .coffee files inside of our /spec directory
     mochaTest:
       nodejs:
         src: ['spec/*.coffee']
