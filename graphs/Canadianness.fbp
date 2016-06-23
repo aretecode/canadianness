@@ -10,9 +10,8 @@ OUTPORT=Emotion.EMOTION:EMOTION
 # (int)
 OUTPORT=Add.SUM:SCORE
 
-# (core/Input @TODO: link) takes the input
-# and sends it to each of the
-# (@TODO: link for sockets) sockets attached to the outport
+# [core/Split](https://github.com/noflo/noflo-core/blob/master/components/Split.coffee) takes the input
+# and sends it to each of the [sockets](http://noflojs.org/api/InternalSocket/) attached to the outport
 # ----
 # Emotion is subgraph
 SplitContent(core/Split) OUT -> CONTENT Emotion(canadianness/Emotion)

@@ -23,6 +23,8 @@ describe 'Canadianness graph', ->
   emotion = null
   score = null
 
+  # we are using this because we are waiting for both port event listeners
+  # to receive data
   emotionData = null
   scoreData = null
   doDone = (done) ->
@@ -32,11 +34,15 @@ describe 'Canadianness graph', ->
       emotionData = null
       done()
 
+  # we only need to load the graph once, so it is in the before
   before (done) ->
     @timeout 4000
     loader = new noflo.ComponentLoader baseDir
     loader.load 'canadianness/Canadianness', (err, instance) ->
       return done err if err
+
+      # but we need to access the instance elsewhere,
+      # so it is assigned to the scoped variable
       c = instance
 
       # because it is a graph, we want to wait until it is ready
@@ -45,6 +51,11 @@ describe 'Canadianness graph', ->
         # for asyncish
         setTimeout done, 1
 
+  # before each test we want to attach all of the outports
+  # (we also attach the inports here as well so the `before` is simpler)
+  # and we want to detach the outports after each,
+  # otherwise the event listeners in the test that ran before
+  # would get triggered again
   beforeEach ->
     content = noflo.internalSocket.createSocket()
     spelling = noflo.internalSocket.createSocket()

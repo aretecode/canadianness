@@ -3,7 +3,7 @@ name: "Determine Emotion fbpspec"
 fixture:
  type: 'fbp'
  data: |
-  # @runtime nodejs
+  # @runtime noflo-nodejs
   INPORT=TestDetermineEmotion.IN:IN
   OUTPORT=DetermineEmotion.EMOTION:EMOTION
   TestDetermineEmotion(canadianness/TestDetermineEmotion) OUT -> CONTENT DetermineEmotion(canadianness/DetermineEmotion)
