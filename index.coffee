@@ -1,5 +1,4 @@
 noflo = require 'noflo'
-noflo = require 'noflo'
 trace = require('noflo-runtime-base').trace
 
 unless noflo.isBrowser()
@@ -11,13 +10,10 @@ spellingData = [{"Canadian":"calibre","British":"calibre","American":"caliber","
 listData = {"eh": 11, "eh!": 11}
 
 canadianness = (args, cb) ->
-  # spelling [optional]
-  spellingData = args['spelling'] or []
-  # words [optional]
-  wordsData = args['words'] or []
+  spellingData = args['spelling']
+  wordsData = args['words']
   # debugging [optional]
   debug = args['debug'] or false
-
   contentData = args['content']
 
   loader = new noflo.ComponentLoader baseDir
@@ -55,6 +51,11 @@ canadianness = (args, cb) ->
       scoreData = null
       emotionData = null
 
+      # when we listen for data, we can call this
+      # to check if both have received data
+      # when they have, call the callback
+      # and then, if we are debugging, write the trace
+      # and log where we wrote it to
       finished = ->
         return unless scoreData? and emotionData?
         cb emotionData, scoreData
