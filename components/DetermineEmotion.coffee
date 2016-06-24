@@ -32,12 +32,21 @@ exports.getComponent = ->
   # we are using brackets to group the stream, so we do not want to forward them
   c.process (input, output) ->
     return unless input.hasStream 'content'
+
+    # we get the [full stream](noflojs.org/documentation/process-api/#full-stream)
     contents = input.getStream 'content'
+
+    # since it has `openBracket` and `closeBracket` we only want the dat
     contents = contents.filter (ip) -> ip.type is 'data'
+
+    # since it is an array of IP objects,
+    # they contain other properties, we only want the data
     contents = contents.map (ip) -> ip.data
 
+    # to hold the emotion matches
     matches = []
 
+    # the emotions we will use
     emotions =
       joy: ['eh!']
       neutral: ['eh']
@@ -49,13 +58,17 @@ exports.getComponent = ->
       sadness: ['...eh', '...eh...', '..eh', 'eh..', '..eh..']
       anger: ['EH!?', 'EH?']
 
+    # go through our content and our emotions
+    # then add them to our `matches`
     for content in contents
       for emotion, data of emotions
         if content in data
           matches.push emotion
 
+    # if we didn't get any emotions, it is default neutral
     if matches.length is 0
       mode = 'neutral'
+    # if we did, we need to find the emotion that was the most common
     else
       mode = findMode matches
 

@@ -1,5 +1,3 @@
-# @runtime noflo-nodejs
-
 # (string)
 INPORT=SplitContent.IN:CONTENT
 # (array)

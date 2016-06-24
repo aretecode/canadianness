@@ -31,7 +31,8 @@
     "grunt-mocha-test": "^0.12.2",
     "mocha": "^2.5.3",
     "noflo-nodejs": "^0.7.1",
-    "noflo-runtime-base": "^0.7.3"
+    "noflo-runtime-base": "^0.7.3",
+    "noflo-tester": "0.0.3"
   },
   "scripts": {
     "start": "./node_modules/.bin/noflo-nodejs --trace --debug",
